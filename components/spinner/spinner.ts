@@ -1,6 +1,6 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {merge, Observable} from 'rxjs';
-import {distinctUntilChanged, mapTo, scan, shareReplay, startWith} from 'rxjs/operators';
+import {distinctUntilChanged, filter, mapTo, pairwise, scan, shareReplay, startWith} from 'rxjs/operators';
 
 @Component
 export default class Spinner extends Vue {
@@ -24,6 +24,14 @@ export default class Spinner extends Vue {
             }),
             distinctUntilChanged(),
             shareReplay({bufferSize: 1, refCount: true})
+        )
+
+        const shouldHidSpinner: Observable<any> = currentLoadCount.pipe(
+            filter(count => count === 0)
+        );
+        const shouldShowSpinner: Observable<any> = currentLoadCount.pipe(
+            pairwise(),
+            filter(([prevCount, currentCount]) => prevCount === 0 && currentCount === 1)
         )
     }
     protected mounted() {
