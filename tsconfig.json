@@ -8,6 +8,7 @@
       "ESNext.AsyncIterable",
       "DOM"
     ],
+    "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
@@ -24,6 +25,9 @@
       ],
       "@components/*": [
         "components/*"
+      ],
+      "@services/*": [
+        "services/*"
       ]
     },
     "types": [

@@ -1,46 +1,34 @@
-import {Component, Vue} from 'vue-property-decorator';
-import {merge, Observable} from 'rxjs';
-import {distinctUntilChanged, filter, mapTo, pairwise, scan, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
-
+import { Observable, timer } from 'rxjs';
+import {Component, Vue} from 'nuxt-property-decorator';
+import { exsitingTaskCompleted, newTaskStarted } from '@services/SpinnerService';
 @Component
 export default class Spinner extends Vue {
-    protected taskStarts: Observable<any> = new Observable();
-    protected taskCompletes: Observable<any> = new Observable();
-    protected showSpinner: Observable<any> = new Observable();
+
+    private slowWork$: Observable<number> = timer(2000);
+    private veryslowWork$: Observable<number> = timer(6000);
 
     protected asyncData() {
         console.log('asyncData')
     }
 
     protected created() {
-        const loadUp: Observable<any> = this.taskStarts.pipe(mapTo(1));
-        const loadDown: Observable<any> = this.taskCompletes.pipe(mapTo(-1));
-
-        const loadVariations: Observable<any> = merge(loadUp, loadDown);
-        const currentLoadCount: Observable<number> = loadVariations.pipe(
-            startWith(0),
-            scan((totalCount, changeCount) => {
-                return totalCount + changeCount;
-            }),
-            distinctUntilChanged(),
-            shareReplay({bufferSize: 1, refCount: true})
-        )
-
-        const shouldHidSpinner: Observable<any> = currentLoadCount.pipe(
-            filter(count => count === 0)
-        );
-        const shouldShowSpinner: Observable<any> = currentLoadCount.pipe(
-            pairwise(),
-            filter(([prevCount, currentCount]) => prevCount === 0 && currentCount === 1)
-        )
-
-        this.showSpinner.pipe(
-            switchMap(() => shouldShowSpinner.pipe(
-                takeUntil(shouldHidSpinner)
-            ))
-        )
     }
+
     protected mounted() {
-        
+
+    }
+
+    private onClickSlowButton() {
+        newTaskStarted();
+        this.slowWork$.subscribe(
+            n => exsitingTaskCompleted()
+        );
+    }
+
+    private onClickVerySlowButton() {
+        newTaskStarted();
+        this.veryslowWork$.subscribe(
+            n => exsitingTaskCompleted()
+        );
     }
 }

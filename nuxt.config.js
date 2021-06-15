@@ -51,6 +51,7 @@ export default {
     }
   },
   alias: {
-    '@components': path.resolve('./components')
+    '@components': path.resolve('./components'),
+    '@services': path.resolve('./services')
   }
 }

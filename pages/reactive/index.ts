@@ -1,11 +1,13 @@
-import {Component, Ref, Vue} from 'vue-property-decorator';
-import Spinner from '@components/spinner/spinner';
+import {Component, Ref, Vue} from 'nuxt-property-decorator';
+import Spinner from '@components/spinner/Spinner';
+import FastButton from '@components/spinner/FastButton';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import {mapTo, scan, share, shareReplay} from 'rxjs/operators';
 
 @Component({
     components: {
-        Spinner
+        Spinner,
+        FastButton
     }
 })
 export default class Index extends Vue {
