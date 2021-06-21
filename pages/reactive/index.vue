@@ -5,8 +5,9 @@
         <p><button ref="tearDownButton">Tear Down</button></p>
         <br />
         <p>----------------------------------------------------</p>
-        <spinner></spinner>
+        <slow-button></slow-button>
         <fast-button></fast-button>
+        <spinner></spinner>
     </div>
 </template>
 <script lang="ts" src="./index.ts"></script>

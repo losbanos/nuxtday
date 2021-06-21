@@ -8,7 +8,7 @@ export default class FastButton extends Vue {
         newTaskStarted();
         new Promise((resolve) => {
             setTimeout(() => {
-                exsitingTaskCompleted;
+                exsitingTaskCompleted();
                 resolve(1);
             }, 300)
         })

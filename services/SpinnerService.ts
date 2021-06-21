@@ -1,5 +1,6 @@
 import {merge, Observable, Subject} from 'rxjs';
 import {distinctUntilChanged, filter, mapTo, pairwise, scan, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import { initLoadingSpinner, Spinner } from './LoadingSpinnerService';
 
 const taskStarts: Subject<any> = new Subject();
 const taskCompletes: Subject<any> = new Subject();
@@ -30,7 +31,13 @@ showSpinner.pipe(
     switchMap(() => shouldShowSpinner.pipe(
         takeUntil(shouldHidSpinner)
     ))
-)
+).subscribe()
+
+const loadingSpinnerPromise = initLoadingSpinner();
+
+loadingSpinnerPromise.then(spinner => {
+    spinner.show()
+})
 
 export function newTaskStarted() {
     taskStarts.next();

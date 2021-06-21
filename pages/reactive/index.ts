@@ -1,25 +1,27 @@
 import {Component, Ref, Vue} from 'nuxt-property-decorator';
 import Spinner from '@components/spinner/Spinner';
 import FastButton from '@components/spinner/FastButton';
+import SlowButton from '@components/spinner/SlowButton';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import {mapTo, scan, share, shareReplay} from 'rxjs/operators';
 
 @Component({
     components: {
         Spinner,
-        FastButton
+        FastButton,
+        SlowButton
     }
 })
 export default class Index extends Vue {
 
     @Ref('emitButton')
-    private $emitButton!: HTMLElement;
+    private $emitButton: HTMLElement;
 
     @Ref('addSecondSubscriberButton')
-    private $addSecondSubscriberButton!: HTMLElement;
+    private $addSecondSubscriberButton: HTMLElement;
 
     @Ref('tearDownButton')
-    private $tearDownButton!: HTMLElement;
+    private $tearDownButton: HTMLElement;
 
     protected created() {
 
