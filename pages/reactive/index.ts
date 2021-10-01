@@ -15,4 +15,13 @@ export default class Index extends Vue {
     protected mounted() {
         console.log('reactive mounted');
     }
+
+    private move() {
+        this.$nuxt.$router.push({
+            path: '/test/test',
+            params: {
+                gameName: 'abc'
+            },
+        })
+    }
 }
