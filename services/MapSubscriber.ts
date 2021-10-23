@@ -1,4 +1,4 @@
-import {Observable, Subscriber} from 'rxjs';
+import {Observable, Subscriber, Subscription} from 'rxjs';
 
 export class MapSubscriber extends Subscriber<any> {
     protected projectFn: (param: any) => any;
@@ -26,6 +26,32 @@ export class MyMergeMapSubscriber extends Subscriber<any> {
         o$.subscribe(
             n => {
                 console.log('    inner = ', value);
+                this.destination.next?.(n);
+            }
+        )
+    }
+}
+
+export class MySwitchMapSubscriber extends Subscriber<any> {
+
+    protected innerSubscription!: Subscription;
+    protected project: (params: any) => Observable<any>;
+
+    constructor(subscriber: Subscriber<any>, project: (params: any) => Observable<any>) {
+        super(subscriber);
+        this.project = project;
+    }
+
+    protected _next(value: any) {
+        console.log('outer = ', value);
+        if (this.innerSubscription) {
+            this.innerSubscription.unsubscribe();
+        }
+
+        const o$: Observable<any> = this.project(value);
+        this.innerSubscription = o$.subscribe(
+            n => {
+                console.log('inner = ', n);
                 this.destination.next?.(n);
             }
         )
