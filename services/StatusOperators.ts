@@ -1,6 +1,11 @@
 import {MonoTypeOperatorFunction, Observable, Subscriber, pipe} from 'rxjs';
 import StatusSubscriber from '~/services/StatusSubscriber';
-import {MapSubscriber, MyMergeMapSubscriber, MySwitchMapSubscriber} from '~/services/MapSubscriber';
+import {
+    MapSubscriber,
+    MyConcatMapSubscriber,
+    MyMergeMapSubscriber,
+    MySwitchMapSubscriber
+} from '~/services/MapSubscriber';
 import {filter} from 'rxjs/operators';
 
 const pipe2 = (...fns: Array<any>) => (source: Observable<any>) => {
@@ -33,6 +38,14 @@ export const mySwitchMap: (project: any) => MonoTypeOperatorFunction<any> = (pro
     return source.lift({
         call: (subscriber: Subscriber<any>, resource: Observable<any>) => {
             resource.subscribe(new MySwitchMapSubscriber(subscriber, project));
+        }
+    })
+}
+
+export const myConcatMap: (project: (params: any) => Observable<any>) => MonoTypeOperatorFunction<any> = (project: (params: any) => Observable<any>) => (source: Observable<any>) => {
+    return source.lift({
+        call: (subscriber: Subscriber<any>, resource: Observable<any>) => {
+            resource.subscribe(new MyConcatMapSubscriber(subscriber, project));
         }
     })
 }

@@ -45,6 +45,7 @@ export class MySwitchMapSubscriber extends Subscriber<any> {
     protected _next(value: any) {
         console.log('outer = ', value);
         if (this.innerSubscription) {
+            console.log(this.innerSubscription);
             this.innerSubscription.unsubscribe();
         }
 
@@ -55,5 +56,41 @@ export class MySwitchMapSubscriber extends Subscriber<any> {
                 this.destination.next?.(n);
             }
         )
+    }
+}
+
+export class MyConcatMapSubscriber extends Subscriber<any> {
+    private project: (params: any) => Observable<any>;
+    private innerSubscription!: Subscription;
+    private buffer: Array<any> = [];
+
+    constructor(subscriber: Subscriber<any>, project: (params: any) => Observable<any>) {
+        super(subscriber);
+        this.project = project;
+    }
+
+    protected _next(value: Observable<any>) {
+        const {isStopped} = this.innerSubscription || {isStopped: true};
+
+        if (!isStopped) {
+            this.buffer = [...this.buffer, value];
+        } else {
+            const o$: Observable<any> = this.project(value);
+            this.innerSubscription = o$.subscribe(
+                n => {
+                    console.log('inner = ', n);
+                    this.destination.next?.(n);
+                },
+                e => console.error(e.message),
+                () => {
+                    console.log('buffer = ', this.buffer);
+                    if (this.buffer.length) {
+                        const [first$, ...rest] = this.buffer;
+                        this.buffer = rest;
+                        this._next(first$);
+                    }
+                }
+            )
+        }
     }
 }

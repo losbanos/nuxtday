@@ -10,9 +10,9 @@ import {
     fromEvent,
     OperatorFunction
 } from 'rxjs';
-import {mergeMap, switchMap} from 'rxjs/operators';
+import {concatMap, mergeMap, switchMap} from 'rxjs/operators';
 import StatusSubscriber from '~/services/StatusSubscriber';
-import {multiply, mySwitchMap} from '~/services/StatusOperators';
+import {multiply, myConcatMap, mySwitchMap} from '~/services/StatusOperators';
 import {delay, scan} from 'rxjs/operators';
 import {MyMergeMapSubscriber} from '~/services/MapSubscriber';
 import {myMergeMap} from '~/services/StatusOperators';
@@ -53,7 +53,7 @@ export default class _gameNo extends Vue {
         const click$: Observable<Event> = fromEvent(document, 'click');
         click$.pipe(
             scan(i => i + 1, 0),
-            mySwitchMap((n: any) => of(n).pipe(delay(1000)))
+            myConcatMap((n: any) => of(n).pipe(delay(1000)))
         ).subscribe(arrSubscriber);
 
         // ob$.pipe(multiply(4)).subscribe(arrSubscriber);
