@@ -91,6 +91,7 @@ export class MyConcatMapSubscriber extends Subscriber<any> {
                     }
                 }
             )
+            this.add(this.innerSubscription);
         }
     }
 }
